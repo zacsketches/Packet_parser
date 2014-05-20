@@ -25,7 +25,11 @@ boolean Packet_parser::listen(){
     
     //check to make sure the first two chars are the packet seperators
     if(Serial.read()==seperator && Serial.read()==seperator) {
-    
+    /*
+    	TODO ready one char at a time to find a pipe...then see if the next char
+			is a pipe.
+    */
+
       if(debug) {
         Serial.println("PACKET ECHO:");
         Serial.print("\tpacket size is: ");
