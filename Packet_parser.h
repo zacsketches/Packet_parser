@@ -1,5 +1,3 @@
-
-
 /*  Packet based serial communcations class for Arduino
  *  
  *  Author:   Zac Staples
@@ -16,9 +14,9 @@
  *  Dependency:  Serial.h
  *
 */
+
 #ifndef PACKET_PARSER_H
 #define PACKET_PARSER_H
-
 
 #include "Arduino.h"
 
