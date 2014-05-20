@@ -18,35 +18,9 @@
 #ifndef PACKET_PARSER_H
 #define PACKET_PARSER_H
 
-//#include "Arduino.h"
-
-
-
-class Packet_vector {
-	// Limited implementation of the c++ standard vector to 
-	// allow dyanamic allocation of memory for building a vector of
-	// Packets.
-	
-	int sz;
-	Packet* elem;
-	int space;
-
-public:
-	Packet_vector() : sz(0), elem(0), space(0) {}
-	~Packet_vector() { delete[] elem; }
-	
-	Packet& operator[](int n) { return elem[n]; }
-	
-	int size() const {return sz;}
-	int capacity() const {return space;}
-	
-	void push_back(Packet_vector& pv);
-	void reserve(int newalloc) ;
-};
-
-//*******************************************************************
-//*                         PACKET_PARSER
-//*******************************************************************
+#include "Arduino.h"
+#include "Packet.h"
+#include "Packet_vector.h"
 
 class Packet_parser {
   
