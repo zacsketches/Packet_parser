@@ -58,15 +58,39 @@ public:
   
 };
 
+struct Packet_vector() {
+	
+	/*
+		TODO dynamically allocated list of packets.
+		Copy stroustrups basic vector implementation
+	*/
+	
+	Packet* data;
+	int sz;
+
+	void push_back(Packet& new_packet);
+	
+	int size() {return sz;}
+
+	Packet& at(int index);
+}
+
+//*******************************************************************
+//*                         PACKET_PARSER
+//*******************************************************************
+
 class Packet_parser {
   
-  Packet packet;
-  char seperator;
+	Packet_list packets;
+	char seperator;
   boolean debug;
 
 public:
-  Packet_parser(int payload_size, boolean echo = false);   //payload size in bytes
-  
+  Packet_parser(boolean echo = false);   //payload size in bytes
+	~Packet_parser() { delete messages; }
+
+	void add_packet(int payload_size, char target);
+
   void config();
   
   boolean listen();

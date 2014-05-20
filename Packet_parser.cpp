@@ -1,11 +1,19 @@
 #include "Arduino.h"
 #include "Packet_parser.h"
 
-Packet_parser::Packet_parser(int payload_size, boolean echo) 
-  : packet(payload_size) { 
-  seperator = '|'; 
-  debug = echo; 
-  
+Packet_parser::Packet_parser(boolean echo) 
+{ 
+	/*
+		TODO properly construct the packet list
+	*/
+	seperator = '|'; 
+  debug = echo;   
+}
+
+void Packet_parser::add_packet(int payload_size, char target ){
+	/*
+		TODO add a packet to the packet list
+	*/
 }
 
 void Packet_parser::config() {
