@@ -19,7 +19,6 @@
 #define PACKET_PARSER_H
 
 #include "Arduino.h"
-#include "Packet.h"
 #include "Packet_vector.h"
 
 class Packet_parser {
@@ -30,7 +29,6 @@ class Packet_parser {
 
 public:
   Packet_parser(bool echo = false);   //payload size in bytes
-//	~Packet_parser() { delete packets; }
 
 	void add_packet(int payload_size, char target);
 
@@ -43,11 +41,6 @@ public:
 
 	//query the latest data pertaining to a target
 	const Packet& query(const char target);
-  
-  char data(const int byt) {
-    //return the data element indicated by byt
-    return packet.get_data(byt);
-  }
   
 };
 

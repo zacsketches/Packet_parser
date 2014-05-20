@@ -1,13 +1,7 @@
 #include "Packet_parser.h"
 
 Packet_parser::Packet_parser(bool echo) 
-{ 
-	/*
-		TODO properly construct the packet list
-	*/
-	seperator = '|'; 
-  debug = echo;   
-}
+	: seperator('|'), debug(echo) {}
 
 void Packet_parser::add_packet(int payload_size, char target ){
 	/*
