@@ -4,15 +4,13 @@ Packet_parser::Packet_parser(bool echo)
 	: seperator('|'), debug(echo) {}
 
 void Packet_parser::add_packet(int payload_size, char target ){
-	/*
-		TODO add a packet to the packet list
-	*/
+	packets.push_back(new Packet(payload_size, target));
 }
 
 void Packet_parser::config() {
     Serial.println("Config data: ");
-    Serial.print("\tpacket payload size: ");
-    Serial.print(packet.payload_size());
+    Serial.print("\tPackets monitored: ");
+    Serial.print(packets.size());
     Serial.println();
 }
   

@@ -10,6 +10,10 @@
  *            Comms are 1-way from the XMTR to the RCVR.  My application
  *            was to use the Esplora as a remote control for another 
  *            Arduino based robot.
+ * 
+ *						Expected implementation relies on push_back of new Packet in the
+ * 						add message function.  So the Packet_vector must take pointers to
+ *						Packets.
  *
  *  Dependency:  Serial.h
  *
@@ -37,7 +41,7 @@ public:
   bool listen();
   
 	//determine if a topic is monitored
-	bool packet_monitored(const char target);
+	bool target_is_monitored(const char target);
 
 	//query the latest data pertaining to a target
 	const Packet& query(const char target);
