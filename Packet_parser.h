@@ -10,6 +10,18 @@
  *            Comms are 1-way from the XMTR to the RCVR.  My application
  *            was to use the Esplora as a remote control for another 
  *            Arduino based robot.
+ * 
+ *						Expected implementation relies on push_back of new Packet in the
+ * 						add message function.  So the Packet_vector provided in a seperate
+ *						library stores pointers to Packets and performs the basic functions
+ *						you would expect to find in an STL vector<Packet*>.
+ *					
+ *						The bool function listen() does the heavy lifting for this class.
+ *						This function monitors the incoming serial port for the message header
+ *						defined as || (two pipes).  Once a header is received, listen reads 
+ *						the next char and tests to see if that 'target' is correlates to
+ *						a monitored packet.  If the packet is monitored, then listen reads
+ *						the next series of of 
  *
  *  Dependency:  Serial.h
  *
@@ -19,69 +31,35 @@
 #define PACKET_PARSER_H
 
 #include "Arduino.h"
-
-struct Packet {
-private:
-  int ps;    // payload_size, bytes in the payload
-  int hs;    // header_size in bytes
-  int sz;
-  boolean rcvd;
-  char tgt;    //think of this as the port or application for the packet
-
-public:  
-  char* data;
-
-  Packet(int payload_size) 
-    :hs(2) { ps = payload_size; data = new char[ps]; sz = ps + hs; }
-  
-  ~Packet() { delete data; }  
-  
-  short size() { return sz; }
-  int payload_size() { return ps; }
-  
-  bool received() { return rcvd; }
-  void successfully_received() { rcvd = true; }
-  void not_received() { rcvd = false; }
-  
-  char target() { return tgt; }
-  void set_target(char target) { tgt = target; }
-  
-  char get_data(const int elem) {
-    //return data elem if elem is in range
-    //otherwise return NULL
-    char byt = NULL;
-    if (elem < ps) {
-      byt = data[elem];
-    }
-    return byt;
-  }
-  
-};
+#include "Packet_vector.h"
 
 class Packet_parser {
   
-  Packet packet;
-  char seperator;
-  boolean debug;
+	Packet_vector packets;
+	char seperator;
+  bool debug;
+	char version[4];				//facilitates versioning in the style 1.0, 0.2, etc
+	int header_size;
+	int min_payload_size;
 
 public:
-  Packet_parser(int payload_size, boolean echo = false);   //payload size in bytes
-  
+  Packet_parser(bool echo = false);   //payload size in bytes
+
   void config();
+
+	void add_packet(int payload_size, char target);
   
-  boolean listen();
+  bool listen();
   
-  boolean ready(const char target) { 
-    bool res = false;
-    if ( packet.received() &&  target==packet.target() ) 
-      res = true;
-    return res;
-  }
-  
-  char data(const int byt) {
-    //return the data element indicated by byt
-    return packet.get_data(byt);
-  }
+	//determine if a topic is monitored
+	bool target_is_monitored(const char target);
+	
+	//find the packet size for a monitored target
+	//returns 0 for an unmonitored packet
+	int payload_size(const char target);
+
+	//query the latest data pertaining to a target
+	void query(const char target, char* buffer);
   
 };
 
