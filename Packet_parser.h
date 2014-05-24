@@ -31,7 +31,82 @@
 #define PACKET_PARSER_H
 
 #include "Arduino.h"
-#include "Packet_vector.h"
+
+struct Packet {
+private:
+  int ps;    // payload_size, bytes in the payload
+  int hs;    // header_size in bytes. Typical value is '||'
+  int sz;
+  char tgt;    //think of this as the port or application for the packet
+	bool delv;	//has the newest data been queried delivered
+	
+public:  
+  char* elem;
+	
+	Packet() {}
+  Packet(int payload_size, char target) 
+    : ps(payload_size), hs(2), sz(ps + hs), tgt(target), elem(new char[ps]),
+			delv(true) {}
+  
+  ~Packet() {
+		delete[] elem;
+	}  
+  
+	//copy assignment
+	Packet& operator=(const Packet* p) {
+		ps = p->ps;
+		hs = p->hs;
+		sz = p->sz;
+		tgt = p->tgt;
+		elem = p->elem;
+	}
+
+  int size() { return sz; }
+	int payload_size() { return ps; }
+  
+  char target() { return tgt; }
+  void set_target(const char target) { tgt = target; }
+  
+	bool delivered() {return delv;}
+	void set_delivered(const bool state) { delv = state; }
+
+  char data(const int index) {
+    //return data elem if elem is in range
+    //otherwise return NULL
+    char byt;
+    if (index < ps) {
+      byt = elem[index];
+    }
+    return byt;
+  } 
+};	//end packet
+
+
+class Packet_vector {
+	// Limited implementation of the c++ standard vector to 
+	// allow dyanamic allocation of memory for building a vector of
+	// Packet*.  A vector of pointers is necessary to allow the primary
+	// user of the vector, Packet_parser, to push_back new objects
+	// allocated on the free store.
+	
+	int sz;
+	Packet* elem;
+	int space;
+
+public:
+	Packet_vector() : sz(0), elem(0), space(0) {}
+	~Packet_vector() { 
+		delete[] elem;
+	}
+	
+	Packet& operator[](int n) { return elem[n]; }
+	
+	int size() const {return sz;}
+	int capacity() const {return space;}
+	
+	void push_back(Packet* p);
+	void reserve(int newalloc) ;
+};	//end Packet_vector
 
 class Packet_parser {
   
@@ -61,6 +136,6 @@ public:
 	//query the latest data pertaining to a target
 	void query(const char target, char* buffer);
   
-};
+};	//end Packet_parser
 
 #endif /* end of include guard: PACKET_PARSER_H */
